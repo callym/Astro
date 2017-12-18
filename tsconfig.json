@@ -1,17 +1,23 @@
 {
     "compilerOptions": {
+		"allowSyntheticDefaultImports": true,
 		"module": "es6",
 		"target": "esnext",
+		"moduleResolution": "node",
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"strict": true,
+		"strictNullChecks": true,
         "noImplicitAny": true,
         "preserveConstEnums": true,
 		"sourceMap": true,
 		"lib": [
 			"esnext",
 			"dom"
-		]
+		],
     },
     "include": [
-        "src/**/*"
+		"src/**/*",
     ],
     "exclude": [
         "node_modules",

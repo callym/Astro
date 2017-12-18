@@ -1,4 +1,5 @@
 let gulp = require('gulp');
+let plumber = require('gulp-plumber');
 let del = require('del');
 let source = require('vinyl-source-stream');
 let buffer = require('vinyl-buffer');
@@ -8,18 +9,21 @@ let browsersync = require('browser-sync').create();
 
 let sourcemaps = require('gulp-sourcemaps');
 let rollup = require('rollup-stream');
+let replace = require('rollup-plugin-replace');
 let resolve = require('rollup-plugin-node-resolve');
 let cjs = require('rollup-plugin-commonjs');
 let minify = require('rollup-plugin-babel-minify');
 let babel = require('rollup-plugin-babel');
 let ts = require('rollup-plugin-typescript2');
+let sizes = require('rollup-plugin-sizes');
 
 let postcss = require('gulp-postcss');
+let cssimport = require('postcss-import');
 let cssnext = require('postcss-cssnext');
 let simplevars = require('postcss-simple-vars');
-let nested = require('postcss-nested');
 let cssnano = require('cssnano');
 
+let cache;
 let prod = false;
 
 gulp.task('browsersync', () => {
@@ -30,11 +34,11 @@ gulp.task('browsersync', () => {
 
 gulp.task('css', () => {
 	let plugins = [
+		cssimport(),
+		simplevars(),
 		cssnext({
 			warnForDuplicates: false,
 		}),
-		simplevars(),
-		nested(),
 	];
 
 	if (prod === true) {
@@ -42,6 +46,7 @@ gulp.task('css', () => {
 	}
 
 	return gulp.src('src/css/**/*.css')
+		.pipe(plumber())
 		.pipe(postcss(plugins))
 		.pipe(gulp.dest('dest/css'))
 		.pipe(browsersync.reload({
@@ -51,32 +56,57 @@ gulp.task('css', () => {
 
 gulp.task('js', () => {
 	let presets = [
-		['env', {
+		['env',
+		{
 			modules: false,
-			presets: ['babel-preset-minify'],
+			useBuiltins: true,
+			debug: true,
 		}],
 	];
 
 	let plugins = [
 		ts(),
-		cjs(),
-		resolve(),
+		replace({
+			'process.env.NODE_ENV': JSON.stringify(prod === true ? 'production' : 'development'),
+		}),
 		babel({
 			presets: presets,
-			plugins: ["external-helpers"],
+			plugins: [
+				"external-helpers",
+				["transform-object-rest-spread",
+				{
+					useBuiltins: true,
+				}],
+			],
+			exclude: 'node_modules/**',
 		}),
-	]
+		cjs(),
+		resolve(),
+	];
 
 	if (prod === true) {
-		plugins.push(minify());
+		plugins.push(minify({
+			comments: false,
+		}));
 	}
+
+	plugins.push(sizes({
+		details: prod,
+	}));
 
 	return rollup({
 			input: './src/js/main.ts',
 			sourcemap: true,
 			plugins: plugins,
-			format: 'umd',
+			format: 'iife',
+			name: 'astro_site',
 		})
+		.on('bundle', bundle => cache = bundle)
+		.on('error', function(e) {
+			console.error(e.stack);
+			this.emit('end');
+		})
+		.pipe(plumber())
 		.pipe(source('main.js'))
 		.pipe(buffer())
 		.pipe(sourcemaps.init({
@@ -96,6 +126,7 @@ gulp.task('html', () => {
 	], {read: false});
 
 	return gulp.src('src/**/*.html')
+		.pipe(plumber())
 		.pipe(inject(sources, {
 			ignorePath: 'dest',
 			addRootSlash: false,

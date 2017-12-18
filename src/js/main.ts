@@ -1,51 +1,20 @@
-import { Planet } from './planet';
-import { Sign } from './sign';
+import { app } from './decorators/render';
+import * as Utils from './utils';
 
-let api = 'http://localhost:30443';
+import { AppState, OnAppStateChange, OnAppStateChangeTo, SetCurrentAppState, SearchLocation } from './app_state';
 
-class Placement {
-	public planet: Planet;
-	public sign: Sign;
-	public degrees: number;
+import { BirthTimeComponent } from './components/birth_time';
+import { ChartDisplayComponent } from './components/chart_display';
+import { LocationSearchComponent } from './components/location_search';
 
-	constructor(planet: string, sign: string, degrees: number) {
-		this.planet = (<any>Planet)[planet];
-		this.sign = (<any>Sign)[sign];
-		this.degrees = degrees;
-	}
-}
+let appRef = app;
+OnAppStateChange().subscribe(() => appRef.render());
 
-function component(): HTMLDivElement {
-	let element = document.createElement('div');
-	element.innerHTML = 'hello world!';
-	return element;
-}
+let location_search_component = new LocationSearchComponent();
+let birth_time_component = new BirthTimeComponent();
+let chart_display_component = new ChartDisplayComponent();
 
-function chart(): Promise<Placement[]> {
-	let headers = new Headers();
-	headers.append('Content-Type', 'application/json');
+Utils.getID('title').addEventListener('click', () => SetCurrentAppState(new SearchLocation()));
 
-	let request = new Request(`${api}/zodiac/chart`, {
-		method: 'POST',
-		headers: headers,
-		mode: 'cors',
-		body: JSON.stringify({
-			date: "1995-06-27",
-			time: "14:14:00",
-		})
-	});
-
-	return fetch(request)
-		.then(res => res.json())
-		.then(json => Object.entries(json)
-				.map(([_, value]) => new Placement(
-					value.planet,
-					value.sign,
-					value.degrees)
-				)
-			);
-}
-
-chart().then(v => console.log(v));
-
-document.body.appendChild(component());
+OnAppStateChangeTo(SearchLocation)
+	.subscribe(() => app.reset());

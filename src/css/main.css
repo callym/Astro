@@ -1,7 +1,192 @@
-body {
-	color: red;
+@import 'normalize.css';
+@import 'flatpickr';
 
-	h1 {
-		color: green;
+$font-family: Georgia, Times, Times New Roman, serif;
+$yellow: #fff5aa;
+$blue: #a2d4ff;
+$pink: #fcc2ec;
+$transition: all 0.2s ease-in-out;
+
+html,
+input,
+select {
+	font-size: 1rem;
+	font-family: $font-family;
+	font-variant-ligatures: common-ligatures
+							discretionary-ligatures
+							historical-ligatures
+							contextual;
+	text-rendering: optimizeLegibility;
+	font-kerning: normal;
+}
+
+.hidden {
+	display: none;
+}
+
+body {
+	background: color(black tint(5%));
+	color: white;
+}
+
+input,
+select {
+	border: none;
+	border-radius: 0.25rem;
+	padding: 0 0.5rem;
+	line-height: 1em;
+	height: 100%;
+	max-width: 100%;
+}
+
+input[type=checkbox] {
+	outline: 1px solid red;
+	opacity: 0;
+
+	&:hover + div::before {
+		background: $blue;
+	}
+
+	& + div {
+		position: absolute;
+		left: 30%;
+		pointer-events: none;
+	}
+
+	& + div::before, & + div::after {
+		content: "";
+		display: inline-block;
+		position: absolute;
+		transition: $transition;
+	}
+
+	& + div::before {
+		width: 1.5rem;
+		height: 1.5rem;
+		border: 2px solid white;
+		border-radius: 0.25rem;
+	}
+
+	& + div::after {
+		opacity: 0;
+		height: 0.45rem;
+		width: 1rem;
+		left: 0.25rem;
+		top: -0.45rem;
+		border-left: 2px solid;
+		border-bottom: 2px solid;
+
+		transform: rotate(-45deg);
+	}
+
+	&:checked + div::after {
+		opacity: 1;
+	}
+}
+
+#title {
+	text-decoration: none;
+	transition: $transition;
+
+	&:hover {
+		color: color($pink blend($blue 20%));
+	}
+
+	& h1 {
+		text-align: center;
+		font-size: 20vw;
+		font-style: italic;
+		margin: 1rem;
+		color: $pink;
+		letter-spacing: 0.5rem;
+	}
+}
+
+#app_container {
+	margin: 0 auto;
+	padding: 0 1rem;
+	max-width: 800px;
+}
+
+fieldset {
+	min-width: 0;
+	border-color: $yellow;
+	border-radius: 1rem;
+
+	& + fieldset {
+		margin-top: 5rem;
+	}
+
+	& legend {
+		font-size: 1.5rem;
+		font-style: italic;
+		letter-spacing: 0.25em;
+		color: $yellow;
+		margin: 0 1em 0.5rem;
+		padding: 0 0.25rem;
+	}
+
+	& div {
+		display: grid;
+		position: relative;
+		align-items: center;
+		grid-template-columns: 30% 70%;
+
+		font-size: 1.25rem;
+
+		margin: 1rem 0;
+
+		& label {
+			text-align: right;
+		}
+
+		& * {
+			margin: 0.5rem 1rem;
+		}
+	}
+
+	& button {
+		display: block;
+
+		min-width: 20%;
+		margin-left: auto;
+		padding: 0.5rem;
+
+		font-family: $font-family;
+		font-weight: bold;
+		font-style: italic;
+		font-size: 2rem;
+
+		border-radius: 1rem;
+		border: 2px solid white;
+		background: $blue;
+		color: white;
+
+		transition: $transition;
+
+		appearance: none;
+
+		&:hover {
+			background: $pink;
+		}
+	}
+}
+
+#chart {
+	margin: 1rem;
+	font-size: 1.25rem;
+
+	& .placement {
+		display: grid;
+		grid-template-columns: 50% 50%;
+
+		& .planet,
+		& .sign {
+			margin: 0.5rem 1rem;
+		}
+
+		& .planet {
+			text-align: right;
+		}
 	}
 }
