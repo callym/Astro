@@ -30,7 +30,8 @@ export class Chart {
 				.map(([_, value]) => new Placement(
 					value.planet,
 					value.sign,
-					value.degrees)
+					value.degrees,
+					value.retrograde)
 				))
 			.then(placements => {
 				let chart = new Chart();

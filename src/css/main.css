@@ -179,19 +179,85 @@ fieldset {
 
 #chart {
 	margin: 1rem;
-	font-size: 1.25rem;
+	font-size: 1.5rem;
 
 	& .placement {
 		display: grid;
+		$centre-margin-size: 2rem;
 		grid-template-columns: 50% 50%;
+
+		&.selected {
+			font-style: italic;
+		}
+
+		&.retrograde .planet {
+			display: grid;
+			grid-template-columns: 100%;
+			position: relative;
+			align-items: center;
+
+			&:before {
+				content: '(℞)';
+				text-align: center;
+				font-style: normal;
+				font-size: 0.75rem;
+				position: absolute;
+				right: calc(-$centre-margin-size * 2);
+				width: calc($centre-margin-size * 2);
+			}
+		}
 
 		& .planet,
 		& .sign {
-			margin: 0.5rem 1rem;
+			margin: 0.5rem calc($centre-margin-size);
+			position: relative;
 		}
 
 		& .planet {
 			text-align: right;
 		}
 	}
+}
+
+#placement {
+	text-align: center;
+
+	& .title {
+		font-size: 1.5rem;
+		margin: 3rem 1rem 0.5rem;
+	}
+
+	& .element,
+	& .quality {
+		display: grid;
+		grid-template-columns: 50% 50%;
+
+		& :first-child {
+			text-align: right;
+		}
+
+		& :last-child {
+			text-align: left;
+		}
+
+		& span {
+			margin: 0.25rem 0.5rem;
+		}
+	}
+}
+
+.earth {
+	color: $yellow;
+}
+
+.water {
+	color: $blue;
+}
+
+.air {
+	color: color($pink blend($blue 20%));
+}
+
+.fire {
+	color: color($pink blend($yellow 40%) whiteness(-20%));
 }

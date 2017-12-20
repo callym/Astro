@@ -5,14 +5,12 @@ export class Placement {
 	public planet: Planet;
 	public sign: Sign;
 	public degrees: number;
+	public retrograde: boolean;
 
-	constructor(planet: string, sign: string, degrees: number) {
+	constructor(planet: string, sign: string, degrees: number, retrograde: boolean) {
 		this.planet = (<any>Planet)[planet];
 		this.sign = (<any>Sign)[sign];
 		this.degrees = degrees;
-	}
-
-	public toString(): string {
-		return `${Planet[this.planet]}: ${Sign[this.sign]}`;
+		this.retrograde = retrograde;
 	}
 }
