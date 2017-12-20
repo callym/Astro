@@ -141,11 +141,12 @@ gulp.task('clean', () => {
 	return del('dest');
 });
 
-gulp.task('build', () => {
-	return runseq('clean', ['css', 'js'], 'html');
+gulp.task('build', cb => {
+	runseq('clean', ['css', 'js'], 'html', cb);
 });
 
-gulp.task('watch', ['browsersync', 'build'], () => {
+gulp.task('watch', () => {
+	runseq('build', 'browsersync');
 	gulp.watch('src/css/**/*.css', ['css']);
 	gulp.watch('src/js/**/*.ts', ['js']);
 	gulp.watch('src/**/*.html', ['html']);
