@@ -1,7 +1,7 @@
 import flatpickr from 'flatpickr';
 import { Subject } from 'rxjs/Subject';
 
-import { html, Render, RenderComponent } from '../decorators/render';
+import { hidden, html, Render, RenderComponent } from '../decorators/render';
 import * as Utils from '../utils';
 
 import { Chart } from '../chart';
@@ -12,7 +12,7 @@ import { CurrentAppState, SelectTime, AppState, SetCurrentAppState, DisplayChart
 @Render(
 function(this: BirthTimeComponent) {
 	return html`
-<fieldset id="birth_details" class$=${CurrentAppState().state !== AppState.SelectTime ? 'hidden' : ''}>
+<fieldset id="birth_details" class$=${hidden(CurrentAppState().state !== AppState.SelectTime)}>
 	<legend>Birth Details</legend>
 	<div>
 		<label for="date">Date</label>

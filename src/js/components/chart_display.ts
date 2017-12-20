@@ -1,4 +1,4 @@
-import { html, Render, RenderComponent } from '../decorators/render';
+import { hidden, html, Render, RenderComponent } from '../decorators/render';
 import { Bind } from '../decorators/bind';
 import { Subject } from 'rxjs/Subject';
 
@@ -10,13 +10,15 @@ import { CurrentAppState, OnAppStateChangeTo, AppState, DisplayChart } from '../
 @Render(
 function(this: ChartDisplayComponent) {
 	return html`
-<div id="chart" class$=${CurrentAppState().state !== AppState.DisplayChart ? 'hidden' : ''}>
+<div class$=${hidden(CurrentAppState().state !== AppState.DisplayChart)}>
+<div id="chart">
 	${this.chart != null ? this.chart.placements.map(p => html`
 		<div class="placement">
 			<div class="planet">${Planet[p.planet]}</div>
 			<div class="sign">${Sign[p.sign]}</div>
 		</div>
 	`) : html``}
+</div>
 </div>`;
 })
 export class ChartDisplayComponent implements RenderComponent {

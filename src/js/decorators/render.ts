@@ -1,4 +1,4 @@
-import { render } from 'lit-html/lib/lit-extended';
+import { html, render } from 'lit-html/lib/lit-extended';
 export { html } from 'lit-html/lib/lit-extended';
 import { TemplateResult } from 'lit-html';
 export { TemplateResult } from 'lit-html';
@@ -6,6 +6,10 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import * as Utils from '../utils';
+
+export function hidden(val: boolean): string {
+	return val === true ? 'hidden' : '';
+}
 
 export interface RenderComponent {
 	reset(): void;

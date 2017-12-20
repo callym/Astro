@@ -1,4 +1,4 @@
-import { html, Render, RenderComponent } from '../decorators/render';
+import { hidden, html, Render, RenderComponent } from '../decorators/render';
 import { Bind } from '../decorators/bind';
 import * as Utils from '../utils';
 
@@ -15,7 +15,7 @@ interface LocationSearchData {
 @Render(
 function(this: LocationSearchComponent) {
 	return html`
-<div class$=${CurrentAppState().state !== AppState.SearchLocation ? 'hidden' : ''}>
+<div class$=${hidden(CurrentAppState().state !== AppState.SearchLocation)}>
 <fieldset id="birth_location">
 	<legend>Birth Location</legend>
 	<div>
@@ -24,7 +24,7 @@ function(this: LocationSearchComponent) {
 	</div>
 	<button id="location_search" on-click=${() => this.search()}>go!</button>
 </fieldset>
-<fieldset id="location_results" class$=${this.locations.length <= 0 ? 'hidden' : ''}>
+<fieldset id="location_results" class$=${hidden(this.locations.length <= 0)}>
 	<legend>Location Results</legend>
 	<div>
 		<label for="results">Location</label>
