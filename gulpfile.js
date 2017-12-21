@@ -45,10 +45,10 @@ gulp.task('css', () => {
 		plugins.push(cssnano());
 	}
 
-	return gulp.src('src/css/**/*.css')
+	return gulp.src('./src/css/**/*.css')
 		.pipe(plumber())
 		.pipe(postcss(plugins))
-		.pipe(gulp.dest('dest/css'))
+		.pipe(gulp.dest('./dest/css'))
 		.pipe(browsersync.reload({
 			stream: true,
 		}));
@@ -113,7 +113,7 @@ gulp.task('js', () => {
 			loadMaps: true,
 		}))
 		.pipe(sourcemaps.write('.'))
-		.pipe(gulp.dest('dest/js'))
+		.pipe(gulp.dest('./dest/js'))
 		.pipe(browsersync.reload({
 			stream: true,
 		}));
@@ -125,20 +125,20 @@ gulp.task('html', () => {
 		'./dest/css/**/*.css'
 	], {read: false});
 
-	return gulp.src('src/**/*.html')
+	return gulp.src('./src/**/*.html')
 		.pipe(plumber())
 		.pipe(inject(sources, {
 			ignorePath: 'dest',
 			addRootSlash: false,
 		}))
-		.pipe(gulp.dest('dest'))
+		.pipe(gulp.dest('./dest'))
 		.pipe(browsersync.reload({
 			stream: true,
 		}));
 });
 
 gulp.task('clean', () => {
-	return del('dest');
+	return del('./dest');
 });
 
 gulp.task('build', cb => {
@@ -147,9 +147,9 @@ gulp.task('build', cb => {
 
 gulp.task('watch', () => {
 	runseq('build', 'browsersync');
-	gulp.watch('src/css/**/*.css', ['css']);
-	gulp.watch('src/js/**/*.ts', ['js']);
-	gulp.watch('src/**/*.html', ['html']);
+	gulp.watch('./src/css/**/*.css', ['css']);
+	gulp.watch('./src/js/**/*.ts', ['js']);
+	gulp.watch('./src/**/*.html', ['html']);
 });
 
 gulp.task('prod', () => {
