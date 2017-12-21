@@ -2,16 +2,18 @@ import { hidden, html, Render, RenderComponent } from '../decorators/render';
 import { Bind } from '../decorators/bind';
 import { Subject } from 'rxjs/Subject';
 
-import { Chart } from '../chart';
-import { Planet } from '../planet';
-import { Sign, Element, Modality } from '../sign';
-import { CurrentAppState, OnAppStateChangeTo, AppState, DisplayChart } from '../app_state';
-import { Placement } from '../placement';
+import { Chart } from '../models/chart';
+import { Placement } from '../models/placement';
+import { Planet } from '../models/planet';
+import { Sign, Element, Modality } from '../models/sign';
+
+import { App } from '../models/app';
+import { AppState, DisplayChart } from '../models/app_state';
 
 @Render(
 function(this: ChartDisplayComponent) {
 	return html`
-<div class$=${hidden(CurrentAppState().state !== AppState.DisplayChart)}>
+<div class$=${hidden(App.isState(AppState.DisplayChart) === false)}>
 <div id="chart-header">
 	${this.chart != null ? html`
 	<h1>${this.chart.display_date}</h1>
@@ -62,7 +64,7 @@ export class ChartDisplayComponent implements RenderComponent {
 
 	constructor() {
 		this.triggerRender = new Subject();
-		OnAppStateChangeTo(DisplayChart)
+		App.onStateChangeTo(DisplayChart)
 			.subscribe(s => this.chart = s.chart);
 	}
 

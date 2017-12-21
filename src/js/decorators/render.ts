@@ -25,7 +25,7 @@ interface Registered {
 	element: HTMLElement;
 }
 
-class App {
+export class App {
 	private container: HTMLElement;
 	private renderables: Map<string, RenderComponentData & Registered>;
 

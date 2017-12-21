@@ -4,15 +4,17 @@ import { Subject } from 'rxjs/Subject';
 import { hidden, html, Render, RenderComponent } from '../decorators/render';
 import * as Utils from '../utils';
 
-import { Chart } from '../chart';
-import { Location } from '../location';
-import { CurrentAppState, SelectTime, AppState, SetCurrentAppState, DisplayChart } from '../app_state';
+import { Chart } from '../models/chart';
+import { Location } from '../models/location';
+
+import { App } from '../models/app';
+import { SelectTime, AppState, DisplayChart } from '../models/app_state';
 
 
 @Render(
 function(this: BirthTimeComponent) {
 	return html`
-<fieldset id="birth_details" class$=${hidden(CurrentAppState().state !== AppState.SelectTime)}>
+<fieldset id="birth_details" class$=${hidden(App.isState(AppState.SelectTime) === false)}>
 	<legend>Birth Details</legend>
 	<div>
 		<label for="date">Date</label>
@@ -68,7 +70,7 @@ export class BirthTimeComponent implements RenderComponent {
 	}
 
 	select() {
-		let current_app_state = CurrentAppState();
+		let current_app_state = App.getState();
 		if (current_app_state.state !== AppState.SelectTime) {
 			return;
 		}
@@ -99,6 +101,6 @@ export class BirthTimeComponent implements RenderComponent {
 
 		location.get_time(chart_date)
 			.then(date => Chart.withPlacements(date, location, display_date))
-			.then(chart => SetCurrentAppState(new DisplayChart(chart)));
+			.then(chart => App.changeState(new DisplayChart(chart)));
 	}
 }

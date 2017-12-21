@@ -5,8 +5,9 @@ import * as Utils from '../utils';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { Location } from '../location';
-import { CurrentAppState, SelectTime, AppState, SetCurrentAppState } from '../app_state';
+import { Location } from '../models/location';
+import { App } from '../models/app';
+import { SelectTime, AppState } from '../models/app_state';
 
 interface LocationSearchData {
 	input: string;
@@ -15,7 +16,7 @@ interface LocationSearchData {
 @Render(
 function(this: LocationSearchComponent) {
 	return html`
-<div class$=${hidden(CurrentAppState().state !== AppState.SearchLocation)}>
+<div class$=${hidden(App.isState(AppState.SearchLocation) === false)}>
 <fieldset id="birth_location">
 	<legend>Birth Location</legend>
 	<div>
@@ -66,6 +67,6 @@ export class LocationSearchComponent implements RenderComponent {
 
 		let location = Location.fromJSON(select_el.value);
 
-		SetCurrentAppState(new SelectTime(location));
+		App.changeState(new SelectTime(location));
 	}
 }

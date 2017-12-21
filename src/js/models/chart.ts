@@ -1,5 +1,13 @@
+import { App } from './app';
 import { Location } from './location';
 import { Placement } from './placement';
+import * as Utils from '../utils';
+
+let process = {
+	env: {
+		NODE_ENV: '',
+	},
+};
 
 export class Chart {
 	public display_date: string;
@@ -9,8 +17,8 @@ export class Chart {
 
 	private constructor() { }
 
-		let api = 'http://localhost:30443';
 	static withPlacements(date: Date, location: Location, display_date: string): Promise<Chart> {
+		let api: string = process.env.NODE_ENV === 'production' ? 'https://api.callym.com' : 'https://api.callym.com';
 
 		let headers = new Headers();
 		headers.append('Content-Type', 'application/json');
@@ -25,7 +33,7 @@ export class Chart {
 			})
 		});
 
-		return fetch(request)
+		return Utils.fetchDelay(request)
 			.then(res => res.json())
 			.then(json => Object.entries(json)
 				.map(([_, value]) => new Placement(

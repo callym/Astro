@@ -1,3 +1,7 @@
+import { App } from './app';
+import { Observable } from 'rxjs/Observable';
+import * as Utils from '../utils';
+
 export class Location {
 	address: string;
 	location: {
@@ -25,7 +29,7 @@ export class Location {
 			mode: 'cors',
 		});
 
-		return fetch(request)
+		return Utils.fetchDelay(request)
 			.then(res => res.json())
 			.then(json => {
 				if (json.status === 'OK') {
@@ -52,7 +56,7 @@ export class Location {
 			mode: 'cors',
 		});
 
-		return fetch(request)
+		return Utils.fetchDelay(request)
 			.then(res => res.json())
 			.then(json => {
 				if (json.status === 'OK') {
