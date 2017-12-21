@@ -9,8 +9,10 @@ import { Location as AppLocation } from './models/location';
 import { BirthTimeComponent } from './components/birth_time';
 import { ChartDisplayComponent } from './components/chart_display';
 import { LocationSearchComponent } from './components/location_search';
+import { LoadingComponent } from './components/loading';
 
 App.register(
+	LoadingComponent,
 	LocationSearchComponent,
 	BirthTimeComponent,
 	ChartDisplayComponent,

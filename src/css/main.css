@@ -9,6 +9,16 @@ $transition: all 0.2s ease-in-out;
 
 @custom-media --mobile (max-width: 768px);
 
+@keyframes spin {
+	from {
+		transform:rotate(0deg);
+	}
+
+	to {
+		transform:rotate(360deg);
+	}
+}
+
 @keyframes flip {
 	from {
 		transform: scaleX(1);
@@ -216,6 +226,39 @@ fieldset {
 
 		&:hover {
 			background: $pink;
+		}
+	}
+}
+
+#loading {
+	padding: 6rem 0;
+	width: 100%;
+	overflow: hidden;
+
+	& .spinner {
+		$size: 20vw;
+		font-size: 10vw;
+		$time: 7s;
+		$fn: linear;
+
+		display: grid;
+		grid-template-columns: $size $size;
+		grid-template-rows: $size $size;
+		justify-content: center;
+		align-items: stretch;
+		text-align: center;
+
+		animation-iteration-count: infinite;
+		animation-timing-function: $fn;
+		animation-name: spin;
+		animation-duration: $time;
+
+		& span {
+			animation-iteration-count: infinite;
+			animation-timing-function: $fn;
+			animation-name: spin;
+			animation-duration: $time;
+			animation-direction: reverse;
 		}
 	}
 }
