@@ -17,14 +17,17 @@ interface LocationSearchData {
 function(this: LocationSearchComponent) {
 	return html`
 <div class$=${hidden(App.isState(AppState.SearchLocation) === false)}>
+<form>
 <fieldset id="birth_location">
 	<legend>Birth Location</legend>
 	<div>
 		<label for="location">Location</label>
 		<input id="location" type="text">
 	</div>
-	<button id="location_search" on-click=${() => this.search()}>go!</button>
+	<button id="location_search" on-click=${(e: Event) => this.search(e)}>go!</button>
 </fieldset>
+</form>
+<form>
 <fieldset id="location_results" class$=${hidden(this.locations.length <= 0)}>
 	<legend>Location Results</legend>
 	<div>
@@ -35,8 +38,9 @@ function(this: LocationSearchComponent) {
 		)}
 		</select>
 	</div>
-	<button id="location_select" on-click=${() => this.select()}>go!</button>
+	<button id="location_select" on-click=${(e: Event) => this.select(e)}>go!</button>
 </fieldset>
+</form>
 </div>`;
 })
 export class LocationSearchComponent implements RenderComponent {
@@ -53,13 +57,15 @@ export class LocationSearchComponent implements RenderComponent {
 		Utils.getID<HTMLInputElement>('location').value = '';
 	}
 
-	search() {
+	search(e: Event) {
+		e.preventDefault();
 		let input = Utils.getID<HTMLInputElement>('location');
 		Location.search(input.value)
 			.then(locations => this.locations = locations);
 	}
 
-	select() {
+	select(e: Event) {
+		e.preventDefault();
 		let select_el = Utils.getID<HTMLSelectElement>('results');
 		if (select_el == null) {
 			return;

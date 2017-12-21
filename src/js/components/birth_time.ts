@@ -14,7 +14,8 @@ import { SelectTime, AppState, DisplayChart } from '../models/app_state';
 @Render(
 function(this: BirthTimeComponent) {
 	return html`
-<fieldset id="birth_details" class$=${hidden(App.isState(AppState.SelectTime) === false)}>
+<form id="birth_details" class$=${hidden(App.isState(AppState.SelectTime) === false)}>
+<fieldset>
 	<legend>Birth Details</legend>
 	<div>
 		<label for="date">Date</label>
@@ -29,8 +30,9 @@ function(this: BirthTimeComponent) {
 		<input type="checkbox" id="time_unknown" on-change=${(e: Event) => this.time_unknown(e)}>
 		<div class="checkbox"></div>
 	</div>
-	<button id="date_choose" on-click=${() => this.select()}>go!</button>
-</fieldset>`;
+	<button id="date_choose" on-click=${(e: Event) => this.select(e)}>go!</button>
+</fieldset>
+</form>`;
 })
 export class BirthTimeComponent implements RenderComponent {
 	triggerRender: Subject<null>;
@@ -69,7 +71,9 @@ export class BirthTimeComponent implements RenderComponent {
 		}
 	}
 
-	select() {
+	select(e: Event) {
+		e.preventDefault();
+
 		let current_app_state = App.getState();
 		if (current_app_state.state !== AppState.SelectTime) {
 			return;
