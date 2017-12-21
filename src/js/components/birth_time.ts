@@ -44,7 +44,7 @@ export class BirthTimeComponent implements RenderComponent {
 	init() {
 		let date = flatpickr('#date', {
 			altInput: true,
-			defaultDate: new Date(1995, 5, 27),
+			defaultDate: new Date(1995, 5, 27).setHours(12, 0, 0, 0),
 		});
 
 		let time = flatpickr('#time', {
@@ -52,8 +52,8 @@ export class BirthTimeComponent implements RenderComponent {
 			time_24hr: true,
 			altInput: true,
 			noCalendar: true,
-			dateFormat: 'H:i',
-			defaultDate: new Date().setHours(14, 14, 0, 0),
+			altFormat: 'H:i',
+			defaultDate: new Date(1995, 5, 27).setHours(14, 14, 0, 0),
 		});
 	}
 
@@ -79,17 +79,26 @@ export class BirthTimeComponent implements RenderComponent {
 		let location = current_app_state.location;
 
 		let chart_date: Date = (<any>date).selectedDates[0];
-		let chart_time = new Date();
+		let chart_time = new Date(chart_date);
 		chart_time.setHours(12, 0, 0, 0);
 
 		if (time_unknown != null && time_unknown.checked === false) {
-			chart_time = (<any>time).selectedDates[0];
+			let ct = (<any>time).selectedDates[0];
+			chart_time.setHours(
+				ct.getHours(),
+				ct.getMinutes(),
+				ct.getSeconds());
 		}
 
-		chart_date.setHours(chart_time.getHours(), chart_time.getMinutes(), chart_time.getSeconds());
+		chart_date.setHours(
+			chart_time.getHours(),
+			chart_time.getMinutes(),
+			chart_time.getSeconds());
+
+		let display_date = `${date.altInput.value}, ${time.altInput.value}`;
 
 		location.get_time(chart_date)
-			.then(date => Chart.withPlacements(date, location))
+			.then(date => Chart.withPlacements(date, location, display_date))
 			.then(chart => SetCurrentAppState(new DisplayChart(chart)));
 	}
 }

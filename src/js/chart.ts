@@ -2,14 +2,15 @@ import { Location } from './location';
 import { Placement } from './placement';
 
 export class Chart {
+	public display_date: string;
 	public date: Date;
 	public location: Location;
 	public placements: Placement[];
 
 	private constructor() { }
 
-	static withPlacements(date: Date, location: Location): Promise<Chart> {
 		let api = 'http://localhost:30443';
+	static withPlacements(date: Date, location: Location, display_date: string): Promise<Chart> {
 
 		let headers = new Headers();
 		headers.append('Content-Type', 'application/json');
@@ -35,6 +36,7 @@ export class Chart {
 				))
 			.then(placements => {
 				let chart = new Chart();
+				chart.display_date = display_date;
 				chart.date = date;
 				chart.location = location;
 				chart.placements = placements;

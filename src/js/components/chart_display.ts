@@ -12,6 +12,12 @@ import { Placement } from '../placement';
 function(this: ChartDisplayComponent) {
 	return html`
 <div class$=${hidden(CurrentAppState().state !== AppState.DisplayChart)}>
+<div id="chart-header">
+	${this.chart != null ? html`
+	<h1>${this.chart.display_date}</h1>
+	<h2>${this.chart.location.address}</h2>
+	` : html``}
+</div>
 <div id="chart">
 	${this.chart != null ? this.chart.placements.map(p => html`
 		<a href="javascript:void(0)" on-click=${() => this.current_placement = p}>
