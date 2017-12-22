@@ -1,5 +1,6 @@
 import { hidden, html, Render, RenderComponent } from '../decorators/render';
 import { Bind } from '../decorators/bind';
+import { icon } from '../utils';
 import { Subject } from 'rxjs/Subject';
 
 import { Chart } from '../models/chart';
@@ -24,11 +25,11 @@ function(this: ChartDisplayComponent) {
 	${this.chart != null ? this.chart.placements.map(p => html`
 		<a href="javascript:void(0)" on-click=${() => this.current_placement = p}>
 		<div class$="placement ${p === this.current_placement ? 'selected' : ''} ${Element[Sign.GetElement(p.sign)].toLowerCase()}">
-			<div class="planet-symbol" text$="${Planet.GetSymbol(p.planet)}">${Planet.GetSymbol(p.planet)}</div>
+			<div class="planet-symbol">${icon(`planet--${Planet[p.planet]}`)}</div>
 			<div class="planet" text$="${Planet[p.planet]}">${Planet[p.planet]}</div>
-			<div class="retrograde" text$="${p.retrograde === true ? '℞' : ''}">${p.retrograde === true ? '℞' : ''}</div>
+			<div class="retrograde">${p.retrograde === true ? icon('symbol--retrograde') : ''}</div>
 			<div class="sign" text$="${Sign[p.sign]}">${Sign[p.sign]}</div>
-			<div class="sign-symbol" text$="${Sign.GetSymbol(p.sign)}">${Sign.GetSymbol(p.sign)}</div>
+			<div class="sign-symbol">${icon(`sign--${Sign[p.sign]}`)}</div>
 		</div>
 		</a>
 	`) : html``}
@@ -41,15 +42,15 @@ function(this: ChartDisplayComponent) {
 	}
 	return html`
 	<div class="title">${Planet[p.planet]} in ${Sign[p.sign]} (${p.degrees.toFixed(1)}&deg;)</div>
-	<div class$="retrograde ${hidden(p.retrograde === false)}">etrograde</div>
+	<div class$="retrograde ${hidden(p.retrograde === false)}">${icon('symbol--retrograde')}etrograde</div>
 	<div class$="element-row ${Element[Sign.GetElement(p.sign)].toLowerCase()}">
 		<span class="element-title">Element</span>
-		<span class="element-symbol">${Element.GetSymbol(Sign.GetElement(p.sign))}</span>
+		<span class="element-symbol">${icon(`element--${Element[Sign.GetElement(p.sign)]}`)}</span>
 		<span class="element">${Element[Sign.GetElement(p.sign)]}</span>
 	</div>
 	<div class$="modality-row ${Modality[Sign.GetModality(p.sign)].toLowerCase()}">
 		<span class="modality-title">Modality</span>
-		<span class="modality-symbol">${Modality.GetSymbol(Sign.GetModality(p.sign))}</span>
+		<span class="modality-symbol">${icon(`modality--${Modality[Sign.GetModality(p.sign)]}`)}</span>
 		<span class="modality">${Modality[Sign.GetModality(p.sign)]}</span>
 	</div>
 	`})()}

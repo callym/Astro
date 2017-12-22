@@ -59,10 +59,20 @@ $transition: all 0.2s ease-in-out;
 	}
 }
 
+html {
+	font-size: 16px;
+}
+
+@media (--mobile) {
+	html {
+		font-size: 12px;
+	}
+}
+
 html,
 input,
 select {
-	font-size: 1.25rem;
+	font-size: 1rem;
 	font-family: $font-family;
 	font-variant-ligatures: common-ligatures
 							discretionary-ligatures
@@ -81,18 +91,27 @@ a[href="javascript:void(0)"] {
 	display: none;
 }
 
+.icon {
+	fill: currentColor;
+	width: 1em;
+	height: 1em;
+	vertical-align: -0.15em;
+	overflow: hidden;
+	shape-rendering: geometricPrecision;
+}
+
 body {
 	background: color(black tint(5%));
 	color: white;
-	margin-bottom: 3rem;
+	margin-bottom: 3em;
 }
 
 input,
 select {
 	border: none;
 	border-radius: 0.25rem;
-	padding: 0 0.5rem;
-	line-height: 1rem;
+	padding: 0 0.5em;
+	line-height: 1em;
 	height: 100%;
 	max-width: 100%;
 }
@@ -119,18 +138,18 @@ input[type=checkbox] {
 	}
 
 	& + div::before {
-		width: 1.5rem;
-		height: 1.5rem;
+		width: 1.5em;
+		height: 1.5em;
 		border: 2px solid white;
 		border-radius: 0.25rem;
 	}
 
 	& + div::after {
 		opacity: 0;
-		height: 0.45rem;
-		width: 1rem;
-		left: 0.25rem;
-		top: -0.45rem;
+		height: 0.45em;
+		width: 1em;
+		left: 0.25em;
+		top: -0.45em;
 		border-left: 2px solid;
 		border-bottom: 2px solid;
 
@@ -156,18 +175,18 @@ input[type=checkbox] {
 		font-style: italic;
 		margin: 1rem;
 		color: $pink;
-		letter-spacing: 0.5rem;
+		letter-spacing: 0.1em;
 	}
 }
 
 #app_container {
 	margin: 0 auto;
-	padding: 0 1rem;
+	padding: 0 1em;
 	max-width: 800px;
 }
 
 form + form {
-	margin-top: 2rem;
+	margin-top: 2em;
 }
 
 fieldset {
@@ -176,34 +195,34 @@ fieldset {
 	border-radius: 1rem;
 
 	& legend {
-		font-size: 1.5rem;
+		font-size: 1.5em;
 		font-style: italic;
-		letter-spacing: 0.25rem;
+		letter-spacing: 0.25em;
 		color: $yellow;
-		margin: 0 1rem 0.5rem;
-		padding: 0 0.25rem;
+		margin: 0 1em 0.5em;
+		padding: 0 0.25em;
 	}
 
 	& div {
 		display: grid;
 		position: relative;
 		align-items: center;
-		grid-template-columns: 30% auto;
+		grid-template-columns: 30% 70%;
 
 		@media (--mobile) {
-			font-size: 20% auto;
+			font-size: 1em;
 		}
 
-		font-size: 1.25rem;
+		font-size: 1.25em;
 
-		margin: 1rem 0;
+		margin: 1em 0;
 
 		& label {
 			text-align: right;
 		}
 
 		& * {
-			margin: 0.5rem 1rem;
+			margin: 0.5em 1em;
 		}
 	}
 
@@ -212,12 +231,12 @@ fieldset {
 
 		min-width: 20%;
 		margin-left: auto;
-		padding: 0.5rem;
+		padding: 0.25em 0.5em;
 
 		font-family: $font-family;
 		font-weight: bold;
 		font-style: italic;
-		font-size: 2rem;
+		font-size: 2em;
 
 		border-radius: 1rem;
 		border: 2px solid white;
@@ -235,7 +254,7 @@ fieldset {
 }
 
 #loading {
-	padding: 6rem 0;
+	padding: 6em 0;
 	width: 100%;
 	overflow: hidden;
 
@@ -269,38 +288,38 @@ fieldset {
 
 #chart-header {
 	text-align: center;
-	margin-bottom: 3rem;
+	margin-bottom: 3em;
 }
 
 #chart {
-	margin: 1rem auto;
-	font-size: 1.5rem;
+	margin: 1em auto;
+	font-size: 1.5em;
 
 	@media (--mobile) {
-		font-size: 1rem;
+		font-size: 1.25em;
 	}
 
 	max-width: 700px;
 
 	display: grid;
 	grid-template-columns:
-		[planet-symbol] 5rem
+		[planet-symbol] 5em
 		[planet] 1fr
-		[retrograde] 2rem
+		[retrograde] 2em
 		[sign] 1fr
-		[sign-symbol] 5rem;
-	grid-column-gap: 1rem;
-	grid-row-gap: 0.5rem;
+		[sign-symbol] 5em;
+	grid-column-gap: 1em;
+	grid-row-gap: 0.5em;
 	align-items: center;
 
 	@media (--mobile) {
 		grid-template-columns:
-			[planet-symbol] 2rem
+			[planet-symbol] 2em
 			[planet] 1fr
-			[retrograde] 1rem
+			[retrograde] 2em
 			[sign] 1fr
-			[sign-symbol] 2rem;
-		grid-row-gap: 1rem;
+			[sign-symbol] 2em;
+		grid-row-gap: 1.5em;
 	}
 
 	& a {
@@ -352,8 +371,15 @@ fieldset {
 	& .retrograde,
 	& .planet-symbol,
 	& .sign-symbol {
-		font-style: normal;
-		font-size: 1rem;
+		& .icon {
+			font-size: 1.5em;
+			stroke: currentColor;
+			stroke-width: 1%;
+		}
+	}
+
+	& .retrograde .icon {
+		font-size: 1em;
 	}
 
 	& .retrograde {
@@ -377,24 +403,23 @@ fieldset {
 	text-align: center;
 
 	display: grid;
-	grid-template-columns: 1fr 3rem 1fr;
-	grid-column-gap: 1rem;
-	grid-row-gap: 0.5rem;
+	grid-template-columns: 1fr 3em 1fr;
+	grid-column-gap: 1em;
+	grid-row-gap: 0.5em;
 	align-items: center;
 
 	& .title {
-		font-size: 1.5rem;
-		margin: 3rem 1rem 0.5rem;
+		font-size: 1.5em;
+		margin: 3em 1em 0.5em;
 		grid-column: 1 / -1;
 	}
 
 	& .retrograde {
 		grid-column: 1 / -1;
 
-		&::before {
-			content: '℞';
-			font-size: 1.1rem;
-			display: inline-block;
+		& .icon {
+			stroke: currentColor;
+			stroke-width: 1%;
 			@apply --flip;
 		}
 	}
@@ -414,6 +439,10 @@ fieldset {
 		& .element,
 		& .modality {
 			text-align: left;
+		}
+
+		& .icon {
+			font-size: 2em;
 		}
 	}
 }

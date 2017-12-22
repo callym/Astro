@@ -5,6 +5,8 @@ let source = require('vinyl-source-stream');
 let buffer = require('vinyl-buffer');
 let runseq = require('run-sequence');
 let inject = require('gulp-inject');
+let svg = require('gulp-svg-sprite');
+let rename = require('gulp-rename');
 let browsersync = require('browser-sync').create();
 
 let sourcemaps = require('gulp-sourcemaps');
@@ -30,6 +32,33 @@ gulp.task('browsersync', () => {
 	browsersync.init({
 		server: './dest/',
 	});
+});
+
+gulp.task('svg', () => {
+	return gulp.src('./src/svg/**/*.svg')
+		.pipe(plumber())
+		.pipe(rename(path => {
+			path.basename = path.basename
+				.replace(`${path.dirname}_`, '');
+		}))
+		.pipe(svg({
+			mode: {
+				symbol: {
+					render: {
+						css: false,
+						scss: false,
+					},
+					dest: '',
+					prefix: '.svg--%s',
+					sprite: 'sprite.svg',
+					example: true,
+				},
+			},
+		}))
+		.pipe(gulp.dest('./dest/svg'))
+		.pipe(browsersync.reload({
+			stream: true,
+		}));
 });
 
 gulp.task('css', () => {
@@ -142,7 +171,7 @@ gulp.task('clean', () => {
 });
 
 gulp.task('build', cb => {
-	runseq('clean', ['css', 'js'], 'html', cb);
+	runseq('clean', ['css', 'js', 'svg'], 'html', cb);
 });
 
 gulp.task('watch', () => {
@@ -150,6 +179,7 @@ gulp.task('watch', () => {
 	gulp.watch('./src/css/**/*.css', ['css']);
 	gulp.watch('./src/js/**/*.ts', ['js']);
 	gulp.watch('./src/**/*.html', ['html']);
+	gulp.watch('./src/svg/**/*.svg', ['svg']);
 });
 
 gulp.task('prod', () => {

@@ -1,7 +1,7 @@
 import { html, render } from 'lit-html/lib/lit-extended';
 export { html } from 'lit-html/lib/lit-extended';
 import { TemplateResult } from 'lit-html';
-export { TemplateResult } from 'lit-html';
+export { TemplateResult, svg } from 'lit-html';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';

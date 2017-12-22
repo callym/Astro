@@ -1,3 +1,4 @@
+import { html, svg, TemplateResult } from './decorators/render';
 import { Observable } from 'rxjs/Observable';
 import { Observer } from 'rxjs/Observer';
 import 'rxjs/add/observable/forkJoin';
@@ -23,4 +24,11 @@ export function fetchDelay(request: Request): Promise<Response> {
 		return ret;
 	})
 	.then(ret => ret[0]);
+}
+
+export function icon(name: string, ...css: string[]): TemplateResult {
+	return svg`
+<svg class$="icon ${css.join(' ')}">
+	<use href$="svg/sprite.svg#${name.toLowerCase()}"></use>
+</svg>`;
 }
