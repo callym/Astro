@@ -47,12 +47,12 @@ class AppClass {
 
 	register<T extends RenderComponent>(...type: { new(): T ;}[]) {
 		type.forEach(t => {
-			this.components.set(t.prototype.constructor.name, new t());
+			this.components.set(t.prototype.class_name, new t());
 		});
 	}
 
 	get<T extends RenderComponent>(type: { new(): T ;}): T | undefined {
-		let component = this.components.get(type.prototype.constructor.name);
+		let component = this.components.get(type.prototype.class_name);
 
 		if (component != null) {
 			return component as T;

@@ -13,7 +13,7 @@ import { Sign, Element, Modality } from '../models/sign';
 import { App } from '../models/app';
 import { AppState, DisplayChart } from '../models/app_state';
 
-@Render(
+@Render('ChartDisplayComponent',
 function(this: ChartDisplayComponent) {
 	return html`
 <div class$=${hidden(App.isState(AppState.DisplayChart) === false)}>

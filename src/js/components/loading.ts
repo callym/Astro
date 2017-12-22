@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 import { App } from '../models/app';
 import { Element } from '../models/sign';
 
-@Render(
+@Render('LoadingComponent',
 function(this: LoadingComponent) {
 	return html`
 <div id="loading" class$=${hidden(App.isLoading() === false)}>

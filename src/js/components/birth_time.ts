@@ -11,7 +11,7 @@ import { App } from '../models/app';
 import { SelectTime, AppState, DisplayChart } from '../models/app_state';
 
 
-@Render(
+@Render('BirthTimeComponent',
 function(this: BirthTimeComponent) {
 	return html`
 <form id="birth_details" class$=${hidden(App.isState(AppState.SelectTime) === false)}>

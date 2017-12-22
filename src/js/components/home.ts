@@ -11,7 +11,7 @@ import { Element, Sign } from '../models/sign';
 import { AppState, DisplayChart, SearchLocation } from '../models/app_state';
 import { App } from '../models/app';
 
-@Render(
+@Render('HomeComponent',
 function(this: HomeComponent) {
 	return html`
 <div id="home" class$=${hidden(App.isState(AppState.Home) === false)}>

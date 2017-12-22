@@ -14,7 +14,7 @@ enum State {
 	Location,
 }
 
-@Render(
+@Render('LocationSearchComponent',
 function(this: LocationSearchComponent) {
 	return html`
 <div class$=${hidden(App.isState(AppState.SearchLocation) === false)}>

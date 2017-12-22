@@ -105,7 +105,7 @@ export class App {
 
 export let app = new App();
 
-export function Render(html: () => TemplateResult) {
+export function Render(name: string, html: () => TemplateResult) {
 	return function<T extends { new(...args: any[]): RenderComponent }>(target: T) {
 		const result = class extends target {
 			public name: string;
@@ -122,7 +122,7 @@ export function Render(html: () => TemplateResult) {
 
 				html = html.bind(this);
 
-				this.name = target.prototype.constructor.name;
+				this.name = name;
 
 				app.register(this.name, {
 					init,
@@ -134,6 +134,7 @@ export function Render(html: () => TemplateResult) {
 		};
 
 		result.prototype = target.prototype;
+		result.prototype.class_name = name;
 		return result;
 	};
 }
