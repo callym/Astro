@@ -12,8 +12,8 @@ export function hidden(val: boolean): string {
 }
 
 export interface RenderComponent {
-	reset(): void;
-	init?(): void;
+	reset(): void | Promise<any>;
+	init?(): void | Promise<any>;
 	triggerRender: Subject<null>;
 }
 
@@ -42,12 +42,6 @@ export class App {
 
 		this.renderables.set(name, { ...data, element: el });
 
-		this.render(name);
-
-		if (data.init != null) {
-			data.init();
-		}
-
 		data.triggerRender.subscribe(() => this.render(name));
 	}
 
@@ -55,6 +49,21 @@ export class App {
 		this.renderables.delete(name);
 
 		this.render();
+	}
+
+	init(): Promise<null> {
+		return Promise.all(
+			[...this.renderables.values()]
+				.map(r => {
+					this.doRender(r);
+					if (r.init != null) {
+						return Utils.promise(r.init())
+							.then(() => r.reset());
+					}
+
+					return r.reset();
+				})
+		).then(() => null);
 	}
 
 	private doRender(r: RenderComponentData & Registered) {
@@ -74,20 +83,23 @@ export class App {
 		[...this.renderables.values()].forEach(r => this.doRender(r));
 	}
 
-	reset(name?: string) {
+	reset(name?: string): Promise<null> {
 		if (name != null) {
 			let r = this.renderables.get(name);
 			if (r == null) {
-				return;
+				return Utils.promise(null);
 			}
 
-			r.reset();
-
-			return this.render(name);
+			return Promise.all([
+				Utils.promise(r.reset()),
+				Utils.promise(this.render(name)),
+			]).then(() => null);
 		}
 
-		[...this.renderables.values()].forEach(r => r.reset());
-		this.render();
+		return Promise.all([
+			...[...this.renderables.values()].map(r => Utils.promise(r.reset())),
+			Utils.promise(this.render()),
+		]).then(() => null);
 	}
 }
 

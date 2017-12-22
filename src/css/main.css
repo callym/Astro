@@ -1,5 +1,6 @@
 @import 'normalize.css';
 @import 'flatpickr';
+@import 'balloon-css/balloon.css';
 
 $font-family: Georgia, Times, Times New Roman, serif;
 $yellow: #fff5aa;
@@ -7,7 +8,28 @@ $blue: #a2d4ff;
 $pink: #fcc2ec;
 $transition: all 0.2s ease-in-out;
 
+$earth: $yellow;
+$water: $blue;
+$air: color($pink blend($blue 20%));
+$fire: color($pink blend($yellow 40%) whiteness(-20%));
+
 @custom-media --mobile (max-width: 768px);
+
+.earth {
+	color: $earth;
+}
+
+.water {
+	color: $water;
+}
+
+.air {
+	color: $air;
+}
+
+.fire {
+	color: $fire;
+}
 
 @keyframes spin {
 	from {
@@ -82,17 +104,45 @@ select {
 	font-kerning: normal;
 }
 
+[data-balloon]::after {
+	font-family: $font-family !important;
+	font-weight: bold !important;
+	font-size: 0.5em !important;
+	letter-spacing: 0.05em;
+
+	background: color($blue blend(black 50%));
+	border: 2px solid white;
+	border-radius: 1em;
+	color: white;
+	box-shadow: 0px 0px 7px white;
+
+	transition: opacity;
+}
+
+[data-balloon-visible="false"]::after {
+	opacity: 0 !important;
+}
+
+input,
+select {
+	max-width: 100%;
+}
+
 a[href="javascript:void(0)"] {
+	color: currentColor;
 	text-decoration: none;
 	outline: none;
 }
 
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 .icon {
 	fill: currentColor;
+	stroke: currentColor;
+	stroke-width: 1%;
+
 	width: 1em;
 	height: 1em;
 	vertical-align: -0.15em;
@@ -161,12 +211,34 @@ input[type=checkbox] {
 	}
 }
 
+button {
+	display: block;
+	padding: 0.25em 0.5em;
+
+	font-family: $font-family;
+	font-weight: bold;
+	font-style: italic;
+
+	border-radius: 1rem;
+	border: 2px solid white;
+	background: $blue;
+	color: white;
+
+	transition: $transition;
+
+	appearance: none;
+
+	&:hover {
+		background: $pink;
+	}
+}
+
 #title {
 	text-decoration: none;
 	transition: $transition;
 
 	&:hover {
-		color: color($pink blend($blue 20%));
+		color: $air;
 	}
 
 	& h1 {
@@ -185,7 +257,7 @@ input[type=checkbox] {
 	max-width: 800px;
 }
 
-form + form {
+form {
 	margin-top: 2em;
 }
 
@@ -227,29 +299,9 @@ fieldset {
 	}
 
 	& button {
-		display: block;
-
 		min-width: 20%;
 		margin-left: auto;
-		padding: 0.25em 0.5em;
-
-		font-family: $font-family;
-		font-weight: bold;
-		font-style: italic;
 		font-size: 2em;
-
-		border-radius: 1rem;
-		border: 2px solid white;
-		background: $blue;
-		color: white;
-
-		transition: $transition;
-
-		appearance: none;
-
-		&:hover {
-			background: $pink;
-		}
 	}
 }
 
@@ -286,9 +338,138 @@ fieldset {
 	}
 }
 
+#home {
+	max-width: 450px;
+	margin: 0 auto;
+	display: grid;
+	grid-template-columns:
+		[delete] 3em
+		[name] 1fr
+		[sun] 2em
+		[sun-sign] 2em
+		1em
+		[moon] 2em
+		[moon-sign] 2em;
+	grid-column-gap: 1em;
+	grid-row-gap: 1.5em;
+	align-items: center;
+
+	& a, & .chart {
+		display: grid;
+		grid-template-columns: inherit;
+		grid-column-gap: inherit;
+		align-items: inherit;
+		grid-column: 1 / -1;
+	}
+
+	& .delete {
+		grid-column: delete;
+		font-size: 0.75em;
+
+		& button {
+			padding: 0.25em;
+			background-color: $fire;
+			position: relative;
+
+			&:hover {
+				background-color: color($fire blend(red 40%));
+			}
+		}
+	}
+
+	& .new {
+		grid-column: 1 / -1;
+		font-size: 2em;
+
+		& button {
+			width: 100%;
+		}
+	}
+
+	& .chart {
+		font-size: 2rem;
+
+		& *:before {
+			content: attr(text);
+			position: absolute;
+			z-index: -1;
+			text-shadow: 0px 0px 7px white;
+			transition: $transition;
+		}
+
+		&:not(:hover) {
+			& *:before {
+				opacity: 0;
+			}
+		}
+	}
+
+	& .name {
+		grid-column: name;
+	}
+
+	& .sun {
+		grid-column: sun;
+	}
+
+	& .sun-sign {
+		grid-column: sun-sign;
+	}
+
+	& .moon {
+		grid-column: moon;
+	}
+
+	& .moon-sign {
+		grid-column: moon-sign;
+	}
+}
+
 #chart-header {
 	text-align: center;
 	margin-bottom: 3em;
+
+	display: grid;
+	grid-template-columns:
+		[save] 10em
+		[title] 1fr
+		[share] 10em;
+	grid-template-areas: "save title share";
+	grid-column-gap: 1em;
+	grid-row-gap: 0.5em;
+	align-items: center;
+
+	@media (--mobile) {
+		grid-template-columns: 50% 50%;
+		grid-template-areas:
+			"save share"
+			"title title"
+		;
+	}
+
+	& .title {
+		grid-area: title;
+	}
+
+	& .share {
+		grid-area: share;
+	}
+
+	& .save {
+		grid-area: save;
+	}
+
+	& .share,
+	& .save {
+		font-size: 1.5em;
+
+		& .icon {
+			stroke: currentColor;
+			stroke-width: 2%;
+			font-size: 1.25em;
+			vertical-align: middle;
+		}
+	}
 }
 
 #chart {
@@ -373,8 +554,6 @@ fieldset {
 	& .sign-symbol {
 		& .icon {
 			font-size: 1.5em;
-			stroke: currentColor;
-			stroke-width: 1%;
 		}
 	}
 
@@ -418,8 +597,6 @@ fieldset {
 		grid-column: 1 / -1;
 
 		& .icon {
-			stroke: currentColor;
-			stroke-width: 1%;
 			@apply --flip;
 		}
 	}
@@ -445,20 +622,4 @@ fieldset {
 			font-size: 2em;
 		}
 	}
-}
-
-.earth {
-	color: $yellow;
-}
-
-.water {
-	color: $blue;
-}
-
-.air {
-	color: color($pink blend($blue 20%));
-}
-
-.fire {
-	color: color($pink blend($yellow 40%) whiteness(-20%));
 }

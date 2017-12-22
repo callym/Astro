@@ -2,6 +2,8 @@ import { hidden, html, Render, RenderComponent } from '../decorators/render';
 import { Bind } from '../decorators/bind';
 import { icon } from '../utils';
 import { Subject } from 'rxjs/Subject';
+import Clipboard from 'clipboard';
+import localForage from 'localforage';
 
 import { Chart } from '../models/chart';
 import { Placement } from '../models/placement';
@@ -17,12 +19,23 @@ function(this: ChartDisplayComponent) {
 <div class$=${hidden(App.isState(AppState.DisplayChart) === false)}>
 <div id="chart-header">
 	${this.chart != null ? html`
-	<h1>${this.chart.display_date}</h1>
-	<h2>${this.chart.location.address}</h2>
+	<button class="save" on-click="${(e: Event) => this.save(e)}"
+		data-balloon="saved!" data-balloon-pos="down" data-balloon-visible$="${this.has_saved}">
+		save ${icon('symbol--save')}
+	</button>
+	<div class="title">
+		<h1>${this.chart.name}</h1>
+		<h2>${this.chart.display_date}</h2>
+		<h3>${this.chart.location.address}</h3>
+	</div>
+	<button class="share" data-clipboard-text$="${this.chart_url}"
+		data-balloon="copied link to clipboard!" data-balloon-pos="down" data-balloon-visible$="${this.has_shared}">
+		share ${icon('symbol--share')}
+	</button>
 	` : html``}
 </div>
 <div id="chart">
-	${this.chart != null ? this.chart.placements.map(p => html`
+	${this.chart != null ? [...this.chart.placements.values()].map(p => html`
 		<a href="javascript:void(0)" on-click=${() => this.current_placement = p}>
 		<div class$="placement ${p === this.current_placement ? 'selected' : ''} ${Element[Sign.GetElement(p.sign)].toLowerCase()}">
 			<div class="planet-symbol">${icon(`planet--${Planet[p.planet]}`)}</div>
@@ -62,15 +75,55 @@ export class ChartDisplayComponent implements RenderComponent {
 
 	@Bind chart: Chart | null;
 	@Bind current_placement: Placement | null;
+	@Bind chart_url: string;
+
+	@Bind has_saved: boolean;
+	@Bind has_shared: boolean;
 
 	constructor() {
 		this.triggerRender = new Subject();
 		App.onStateChangeTo(DisplayChart)
-			.subscribe(s => this.chart = s.chart);
+			.subscribe(s => {
+				this.chart = s.chart;
+
+				let params = new URLSearchParams();
+				params.set('name', this.chart.name);
+				params.set('location', JSON.stringify(this.chart.location));
+				params.set('date', this.chart.date.toISOString());
+				params.set('display_date', this.chart.display_date);
+				this.chart_url = `${location.origin}${location.pathname}?${params}`;
+			});
+	}
+
+	init() {
+		let share = new Clipboard('.share');
+
+		share.on('success', () => {
+			this.has_shared = true;
+			setTimeout(() => this.has_shared = false, 1000);
+		});
 	}
 
 	reset() {
 		this.chart = null;
+		this.chart_url = '';
 		this.current_placement = null;
+
+		this.has_saved = false;
+		this.has_shared = false;
+	}
+
+	save(e: Event) {
+		e.preventDefault();
+
+		if (this.chart == null) {
+			return;
+		}
+
+		localForage.setItem(this.chart.name, this.chart)
+			.then(() => {
+				this.has_saved = true;
+				setTimeout(() => this.has_saved = false, 1000);
+			});
 	}
 }

@@ -1,23 +1,31 @@
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/filter';
+import localForage from 'localforage';
 import { Stack } from './stack';
 import { AppState, AppStates, Home, SearchLocation } from './app_state';
 import { app, App as RenderApp, RenderComponent } from '../decorators/render';
 
 class AppClass {
 	state: Stack<AppStates>;
-	private components: RenderComponent[];
+	private components: Map<string, RenderComponent>;
 	private appRef: RenderApp;
 	private loading_count: number;
 
 	constructor() {
 		this.state = new Stack(new Home() as AppStates);
-		this.components = [];
+		this.components = new Map();
 		this.appRef = app;
 		this.loading_count = 0;
 
+		localForage.config({
+			name: 'callym.com-astro',
+		});
+
 		this.onStateChange().subscribe(() => this.appRef.render());
-		this.onStateChangeTo(SearchLocation).subscribe(() => this.appRef.reset());
+	}
+
+	init(): Promise<null> {
+		return this.appRef.init();
 	}
 
 	addLoading() {
@@ -39,8 +47,18 @@ class AppClass {
 
 	register<T extends RenderComponent>(...type: { new(): T ;}[]) {
 		type.forEach(t => {
-			this.components.push(new t());
+			this.components.set(t.prototype.constructor.name, new t());
 		});
+	}
+
+	get<T extends RenderComponent>(type: { new(): T ;}): T | undefined {
+		let component = this.components.get(type.prototype.constructor.name);
+
+		if (component != null) {
+			return component as T;
+		}
+
+		return component;
 	}
 
 	onStateChange(): Observable<AppStates> {
@@ -69,9 +87,9 @@ class AppClass {
 		this.state.push(state);
 	}
 
-	resetState(state: AppStates) {
+	resetState(state: AppStates): Promise<null> {
 		this.state.empty(state);
-		this.appRef.reset();
+		return this.appRef.reset();
 	}
 
 	getState(): AppStates {

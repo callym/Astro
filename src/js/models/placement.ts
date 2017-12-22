@@ -13,4 +13,15 @@ export class Placement {
 		this.degrees = degrees;
 		this.retrograde = retrograde;
 	}
+
+	static fromJSON(data: any, parsed?: boolean): Placement {
+		if (parsed !== true) {
+			data = JSON.parse(data);
+		}
+
+		return new Placement(data.planet,
+			data.sign,
+			data.degrees,
+			data.retrograde);
+	}
 }

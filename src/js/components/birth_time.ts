@@ -82,6 +82,7 @@ export class BirthTimeComponent implements RenderComponent {
 		let date = (<any>Utils.getID('date'))._flatpickr;
 		let time = (<any>Utils.getID('time'))._flatpickr;
 		let time_unknown = Utils.getID<HTMLInputElement>('time_unknown');
+		let name = current_app_state.name;
 		let location = current_app_state.location;
 
 		let chart_date: Date = (<any>date).selectedDates[0];
@@ -104,7 +105,9 @@ export class BirthTimeComponent implements RenderComponent {
 		let display_date = `${date.altInput.value}, ${time.altInput.value}`;
 
 		location.get_time(chart_date)
-			.then(date => Chart.withPlacements(date, location, display_date))
-			.then(chart => App.changeState(new DisplayChart(chart)));
+			.then(date => Chart.withPlacements(name, date, location, display_date))
+			.then(chart => App.changeState(new DisplayChart(chart)))
+			.then(() => App.removeLoading())
+			.then(() => App.removeLoading());
 	}
 }

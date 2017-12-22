@@ -14,8 +14,10 @@ export class Location {
 		this.location = location;
 	}
 
-	public static fromJSON(json: any): Location {
-		json = JSON.parse(json);
+	public static fromJSON(json: any, parsed?: boolean): Location {
+		if (parsed !== true) {
+			json = JSON.parse(json);
+		}
 		return new Location(json.address, json.location);
 	}
 

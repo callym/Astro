@@ -9,8 +9,9 @@ import { Location } from '../models/location';
 import { App } from '../models/app';
 import { SelectTime, AppState } from '../models/app_state';
 
-interface LocationSearchData {
-	input: string;
+enum State {
+	Name,
+	Location,
 }
 
 @Render(
@@ -18,7 +19,18 @@ function(this: LocationSearchComponent) {
 	return html`
 <div class$=${hidden(App.isState(AppState.SearchLocation) === false)}>
 <form>
-<fieldset id="birth_location">
+<fieldset id="chart_name" class$=${hidden(this.state != State.Name)}>
+	<legend>Name</legend>
+	<div>
+		<label for="name">Name</label>
+		<input id="name" type="text">
+	</div>
+	<button id="name_set" on-click=${(e: Event) => this.set_name(e)}>go!</button>
+</fieldset>
+</form>
+<form>
+<form>
+<fieldset id="birth_location" class$=${hidden(this.state != State.Location)}>
 	<legend>Birth Location</legend>
 	<div>
 		<label for="location">Location</label>
@@ -45,23 +57,38 @@ function(this: LocationSearchComponent) {
 })
 export class LocationSearchComponent implements RenderComponent {
 	triggerRender: Subject<null>;
+	@Bind private state: State;
 	@Bind private locations: Location[];
+	@Bind private name: string;
 
 	constructor() {
 		this.triggerRender = new Subject();
+		this.state = State.Name;
 		this.locations = [];
+		this.name = '';
 	}
 
 	reset() {
+		this.state = State.Name;
 		this.locations = [];
+		this.name = '';
 		Utils.getID<HTMLInputElement>('location').value = '';
+		Utils.getID<HTMLInputElement>('name').value = '';
+	}
+
+	set_name(e: Event) {
+		e.preventDefault();
+		let input = Utils.getID<HTMLInputElement>('name');
+		this.name = input.value;
+		this.state = State.Location;
 	}
 
 	search(e: Event) {
 		e.preventDefault();
 		let input = Utils.getID<HTMLInputElement>('location');
 		Location.search(input.value)
-			.then(locations => this.locations = locations);
+			.then(locations => this.locations = locations)
+			.then(() => App.removeLoading());
 	}
 
 	select(e: Event) {
@@ -73,6 +100,6 @@ export class LocationSearchComponent implements RenderComponent {
 
 		let location = Location.fromJSON(select_el.value);
 
-		App.changeState(new SelectTime(location));
+		App.changeState(new SelectTime(location, this.name));
 	}
 }

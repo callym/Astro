@@ -8,45 +8,59 @@ import { Location as AppLocation } from './models/location';
 
 import { BirthTimeComponent } from './components/birth_time';
 import { ChartDisplayComponent } from './components/chart_display';
+import { HomeComponent } from './components/home';
 import { LocationSearchComponent } from './components/location_search';
 import { LoadingComponent } from './components/loading';
 
 App.register(
 	LoadingComponent,
+	HomeComponent,
 	LocationSearchComponent,
 	BirthTimeComponent,
 	ChartDisplayComponent,
 );
 
-Utils.getID('title').addEventListener('click', () => {
-	App.resetState(new Home());
-	App.changeState(new SearchLocation());
-	window.history.replaceState({}, '', `${location.pathname}`);
+let loaded = new Promise<null>(resolve => {
+	document.addEventListener('DOMContentLoaded', () => {
+		App.init()
+			.then(() => reset())
+			.then(() => resolve());
+	})
 });
 
-App.onStateChangeTo(DisplayChart)
-	.subscribe(chart_display => {
-		let params = new URLSearchParams();
-		params.set('location', JSON.stringify(chart_display.chart.location));
-		params.set('date', chart_display.chart.date.toISOString());
-		params.set('display_date', chart_display.chart.display_date);
-		window.history.replaceState({}, '', `${location.pathname}?${params}`);
+loaded.then(() => {
+	Utils.getID('title').addEventListener('click', () => {
+		window.history.replaceState({}, '', location.pathname);
+		reset();
 	});
+});
 
-document.addEventListener('DOMContentLoaded', () => {
-	let params = new URLSearchParams(location.search);
-	let address = params.get('location');
-	let loc = address != null ? AppLocation.fromJSON(address) : null;
-	let date = params.get('date');
-	let display_date = params.get('display_date');
-	if (loc != null && date != null && display_date != null) {
-		Chart.withPlacements(
-			new Date(date),
-			loc,
-			display_date,
-		).then(chart => App.changeState(new DisplayChart(chart)));
-		return;
-	}
+function reset() {
+	return App.resetState(new Home())
+		.then(() => {
+			let params = new URLSearchParams(location.search);
+			let name = params.get('name');
+			let address = params.get('location');
+			let loc = address != null ? AppLocation.fromJSON(address) : null;
+			let date = params.get('date');
+			let display_date = params.get('display_date');
+			if (name != null && loc != null && date != null && display_date != null) {
+				Chart.withPlacements(
+					name,
+					new Date(date),
+					loc,
+					display_date,
+				)
+				.then(chart => App.changeState(new DisplayChart(chart)))
+				.then(() => App.removeLoading());
 
-	App.changeState(new SearchLocation());
-})
+				return;
+			}
+
+			let home = App.get(HomeComponent);
+			if (home == null || home.charts.length <= 0) {
+				App.changeState(new SearchLocation());
+			}
+		})
+		.then(() => Utils.getID('app_container').classList.remove('hidden'));
+};

@@ -21,9 +21,11 @@ export class SearchLocation {
 export class SelectTime {
 	state: AppState.SelectTime = AppState.SelectTime;
 	location: Location;
+	name: string;
 
-	constructor(location: Location) {
+	constructor(location: Location, name: string) {
 		this.location = location;
+		this.name = name;
 	}
 }
 

@@ -20,7 +20,6 @@ export function fetchDelay(request: Request): Promise<Response> {
 		}),
 	).toPromise()
 	.then(ret => {
-		App.removeLoading();
 		return ret;
 	})
 	.then(ret => ret[0]);
@@ -31,4 +30,12 @@ export function icon(name: string, ...css: string[]): TemplateResult {
 <svg class$="icon ${css.join(' ')}">
 	<use href$="svg/sprite.svg#${name.toLowerCase()}"></use>
 </svg>`;
+};
+
+export function promise(value: Promise<any> | null | void): Promise<null> {
+	if (value != null) {
+		return value;
+	}
+
+	return new Promise(resolve => resolve());
 }
