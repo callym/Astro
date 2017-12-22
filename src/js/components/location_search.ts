@@ -7,7 +7,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { Location } from '../models/location';
 import { App } from '../models/app';
-import { SelectTime, AppState } from '../models/app_state';
+import { SelectTime, AppState, SearchLocation } from '../models/app_state';
 
 enum State {
 	Name,
@@ -68,6 +68,11 @@ export class LocationSearchComponent implements RenderComponent {
 		this.name = '';
 	}
 
+	init() {
+		App.onStateChangeTo(SearchLocation)
+			.subscribe(() => Utils.getID('name').focus());
+	}
+
 	reset() {
 		this.state = State.Name;
 		this.locations = [];
@@ -79,6 +84,7 @@ export class LocationSearchComponent implements RenderComponent {
 	set_name(e: Event) {
 		e.preventDefault();
 		let input = Utils.getID<HTMLInputElement>('name');
+		setTimeout(() => Utils.getID('location').focus(), 0);
 		this.name = input.value;
 		this.state = State.Location;
 	}
@@ -88,6 +94,7 @@ export class LocationSearchComponent implements RenderComponent {
 		let input = Utils.getID<HTMLInputElement>('location');
 		Location.search(input.value)
 			.then(locations => this.locations = locations)
+			.then(() => setTimeout(() => Utils.getID('location_select').focus(), 0))
 			.then(() => App.removeLoading());
 	}
 
