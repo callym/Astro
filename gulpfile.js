@@ -51,7 +51,9 @@ gulp.task('svg', () => {
 					dest: '',
 					prefix: '.svg--%s',
 					sprite: 'sprite.svg',
-					example: true,
+					example: {
+						dest: 'index.html',
+					},
 				},
 			},
 		}))
